@@ -1,4 +1,4 @@
-#include "vmt_shadow_fucker.h"
+#include "VMTShadow.h"
 
 
 // Initializes the VMTShadowing
