@@ -2,7 +2,7 @@
 #include <map>
 #include <utility>
 
-class VMTShadowFucker
+class VMTShadowing
 {
 private:
 	// Pointer to Target Object
@@ -21,7 +21,7 @@ public:
 	/// Initialize the class for hooking the VMT using the VMT Shadow Hooking technique
 	/// </summary>
 	/// <param name="object">The Object Target</param>
-	VMTShadowFucker  ( void* object );
+	VMTShadowing  ( void* object );
 
 	/// <summary>
 	/// Apply The Hook on function of VMT

@@ -1,8 +1,8 @@
 #include "vmt_shadow_fucker.h"
 
 
-// Initializes the VMTShadowFucker
-VMTShadowFucker::VMTShadowFucker ( void* object )
+// Initializes the VMTShadowing
+VMTShadowing::VMTShadowing ( void* object )
 {
 	// Initialize essential class members
 	this->m_ptr_object = object;
@@ -24,7 +24,7 @@ VMTShadowFucker::VMTShadowFucker ( void* object )
 	*reinterpret_cast< uintptr_t** >( object ) = this->m_ptr_object_fake_vtable;
 }
 
-uintptr_t* VMTShadowFucker::Apply ( int index, uintptr_t* hook_function )
+uintptr_t* VMTShadowing::Apply ( int index, uintptr_t* hook_function )
 {
 	// Get the Pointer to Original Func
 	uintptr_t* p_original_func = *reinterpret_cast< uintptr_t** >( this->m_ptr_object_fake_vtable + index );
@@ -38,7 +38,7 @@ uintptr_t* VMTShadowFucker::Apply ( int index, uintptr_t* hook_function )
 	return p_original_func;
 }
 
-void VMTShadowFucker::Remove ( int index )
+void VMTShadowing::Remove ( int index )
 {
 	// Swap the pointer from hook function to original function using the hook list
 	*reinterpret_cast< uintptr_t** >( this->m_ptr_object_fake_vtable + index ) = this->m_object_hooks [ index ];
