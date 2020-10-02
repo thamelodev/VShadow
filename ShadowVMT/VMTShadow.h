@@ -16,6 +16,11 @@ private:
 	// Map Containing the index hooked and the original function
 	std::map<int, uintptr_t*> m_object_hooks;
 
+	/// <summary>
+	/// Gets the number of functions in a vtable
+	/// </summary>
+	size_t get_function_count();
+
 public:
 	/// <summary>
 	/// Initialize the class for hooking the VMT using the VMT Shadow Hooking technique

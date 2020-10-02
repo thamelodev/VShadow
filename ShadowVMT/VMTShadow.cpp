@@ -1,5 +1,5 @@
 #include "VMTShadow.h"
-
+#include <Windows.h>
 
 // Initializes the VMTShadowing
 VMTShadowing::VMTShadowing ( void* object )
@@ -10,8 +10,7 @@ VMTShadowing::VMTShadowing ( void* object )
 	this->m_object_vtable_size = 0;
 	
 	// Calculates the VMT Size
-	while ( reinterpret_cast< uintptr_t* >( this->m_ptr_object_vtable [ this->m_object_vtable_size ] ) )
-		this->m_object_vtable_size++;
+	this->m_object_vtable_size = this->get_function_count();
 
 	// Creates the Fake VMT
 	this->m_ptr_object_fake_vtable = new uintptr_t [ this->m_object_vtable_size ];
@@ -22,6 +21,27 @@ VMTShadowing::VMTShadowing ( void* object )
 
 	// Swap VTable Pointer
 	*reinterpret_cast< uintptr_t** >( object ) = this->m_ptr_object_fake_vtable;
+}
+
+size_t VMTShadowing::get_function_count()
+{
+	MEMORY_BASIC_INFORMATION mbi { };
+	size_t i { };
+
+	// Query memory regions until VirtualQuery fails
+	while ( VirtualQuery( reinterpret_cast< LPCVOID >( this->m_ptr_object_vtable[ i ] ), &mbi, sizeof( mbi ) ) )
+	{
+        #define PAGE_EXECUTABLE ( PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY )
+
+		// Break on invalid pointers
+		if ( ( mbi.State != MEM_COMMIT ) || ( mbi.Protect & ( PAGE_GUARD | PAGE_NOACCESS ) ) || !( mbi.Protect & PAGE_EXECUTABLE ) )
+			break;
+
+		// Increment function count
+		++i;
+	}
+
+	return i;
 }
 
 uintptr_t* VMTShadowing::Apply ( int index, uintptr_t* hook_function )
